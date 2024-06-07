@@ -1,6 +1,6 @@
 [package]
 name = "tower-helmet"
-version = "0.1.0"
+version = "0.0.1"
 edition = "2021"
 
 [dependencies]
@@ -14,9 +14,9 @@ rand = "0.8"
 http = "1"
 
 [dev-dependencies]
-axum = "0.7"
 tokio = { version = "1", features = ["full"] }
 reqwest = "0.12"
+axum = "0.7"
 
 [features]
 default = []

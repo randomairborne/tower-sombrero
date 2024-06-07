@@ -1,4 +1,10 @@
 #![warn(clippy::all, clippy::nursery)]
+//! # tower-helmet
+//! ### Easily add basic security headers to your tower http services
+//!
+//! Documentation is a work on progress. [Contribute?]
+//!
+//! [Contribute?]: https://github.com/randomairborne/tower-helmet
 
 #[cfg(feature = "axum")]
 mod axum;
