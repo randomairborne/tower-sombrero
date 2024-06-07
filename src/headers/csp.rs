@@ -218,6 +218,12 @@ impl AsRef<str> for CspSchemeSource {
     }
 }
 
+impl From<CspSchemeSource> for CspSource {
+    fn from(value: CspSchemeSource) -> Self {
+        Self::Scheme(value)
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum CspHashAlgorithm {
     Sha256,
@@ -274,6 +280,12 @@ impl CspSource {
             Self::None => "'none'",
         };
         Cow::Borrowed(borrowed)
+    }
+}
+
+impl From<CspSource> for Vec<CspSource> {
+    fn from(value: CspSource) -> Self {
+        vec![value]
     }
 }
 

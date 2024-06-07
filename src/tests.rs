@@ -48,7 +48,7 @@ async fn sombrero_layer_adds_csp() {
 
 #[tokio::test]
 async fn sombrero_layer_changes_csp_nonce() {
-    let csp = ContentSecurityPolicy::new_empty().script_src([CspSource::Nonce]);
+    let csp = ContentSecurityPolicy::new_empty().script_src(CspSource::Nonce);
     let sombrero = Sombrero::new_empty().content_security_policy(csp);
     let server = test_server(sombrero).await;
     let resp1 = reqwest::get(server.url()).await.unwrap();
