@@ -244,7 +244,7 @@ pub enum CspSource {
     /// Nonce has special handling by the library.
     Nonce,
     Hash(CspHashAlgorithm, String),
-    /// Self is a keyword in rust, so [`SelfOrigin`] serializes to `'self'` in the header.
+    /// Self is a keyword in rust, so [`Self::SelfOrigin`] serializes to `'self'` in the header.
     SelfOrigin,
     UnsafeEval,
     WasmUnsafeEval,

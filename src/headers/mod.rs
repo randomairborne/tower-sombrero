@@ -118,7 +118,7 @@ pub enum ReferrerPolicy {
     NoReferrer,
     /// Send the origin, path, and querystring in Referer when the protocol security level stays the same or improves (HTTP→HTTP, HTTP→HTTPS, HTTPS→HTTPS). Don't send the Referer header for requests to less secure destinations (HTTPS→HTTP, HTTPS→file).
     NoReferrerWhenDowngrade,
-    /// Send only the origin in the Referer header. For example, a document at `https://example.com/page.html` will send the referrer https://example.com/.
+    /// Send only the origin in the Referer header. For example, a document at `https://example.com/page.html` will send the referee `https://example.com/`.
     Origin,
     /// When performing a same-origin request to the same protocol level (HTTP→HTTP, HTTPS→HTTPS), send the origin, path, and query string. Send only the origin for cross origin requests and requests to less secure destinations (HTTPS→HTTP).
     OriginWhenCrossOrigin,
