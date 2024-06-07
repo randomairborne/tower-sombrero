@@ -97,7 +97,7 @@ macro_rules! builder_remove {
 }
 
 impl Sombrero {
-    pub const fn new() -> Self {
+    pub const fn new_empty() -> Self {
         Self {
             content_security_policy: None,
             content_security_policy_report_only: None,

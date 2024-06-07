@@ -34,8 +34,8 @@ pub struct ContentSecurityPolicy {
 }
 
 impl ContentSecurityPolicy {
-    #[allow(clippy::new_without_default)] // i don't want any footguns around here
-    pub fn new() -> Self {
+    // i don't want any footguns around here
+    pub fn new_empty() -> Self {
         Self {
             default_src: vec![],
             child_src: vec![],
@@ -85,7 +85,7 @@ impl ContentSecurityPolicy {
                 CspSource::UnsafeInline,
             ],
             upgrade_insecure_requests: true,
-            ..Self::new()
+            ..Self::new_empty()
         }
     }
 }
