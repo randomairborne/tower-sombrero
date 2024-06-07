@@ -41,7 +41,7 @@ use crate::{
 
 #[derive(Debug, Clone)]
 // would be Copy, if not for those meddling CSP strings
-pub struct Helmet {
+pub struct Sombrero {
     content_security_policy: Option<Arc<ContentSecurityPolicy>>,
     content_security_policy_report_only: Option<Arc<ContentSecurityPolicy>>,
     cross_origin_embedder_policy: Option<CrossOriginEmbedderPolicy>,
@@ -96,7 +96,7 @@ macro_rules! builder_remove {
     };
 }
 
-impl Helmet {
+impl Sombrero {
     pub const fn new() -> Self {
         Self {
             content_security_policy: None,
@@ -118,7 +118,7 @@ impl Helmet {
 }
 
 #[rustfmt::skip]
-impl Helmet {
+impl Sombrero {
     builder_remove!(content_security_policy, remove_content_security_policy);
     builder_remove!(content_security_policy_report_only, remove_content_security_policy_report_only);
     builder_remove!(cross_origin_embedder_policy, remove_cross_origin_embedder_policy);
@@ -149,7 +149,7 @@ impl Helmet {
     builder_add!(x_xss_protection, XXssProtection);
 }
 
-impl Default for Helmet {
+impl Default for Sombrero {
     fn default() -> Self {
         Self {
             content_security_policy: Some(Arc::new(ContentSecurityPolicy::strict_default())),
@@ -170,24 +170,24 @@ impl Default for Helmet {
     }
 }
 
-impl<S> Layer<S> for Helmet {
-    type Service = HelmetService<S>;
+impl<S> Layer<S> for Sombrero {
+    type Service = SombreroService<S>;
 
     fn layer(&self, inner: S) -> Self::Service {
-        HelmetService {
-            helmet: self.clone(),
+        SombreroService {
+            sombrero: self.clone(),
             inner,
         }
     }
 }
 
 #[derive(Debug, Clone)]
-pub struct HelmetService<S> {
-    helmet: Helmet,
+pub struct SombreroService<S> {
+    sombrero: Sombrero,
     inner: S,
 }
 
-impl<S, Body> Service<Request<Body>> for HelmetService<S>
+impl<S, Body> Service<Request<Body>> for SombreroService<S>
 where
     S: Service<Request<Body>, Response = Response<Body>>,
     S::Future: Send + 'static,
@@ -205,20 +205,20 @@ where
     fn call(&mut self, mut request: Request<Body>) -> Self::Future {
         let nonce = random_string(32);
         let csp = self
-            .helmet
+            .sombrero
             .content_security_policy
             .as_ref()
             .map(|csp| csp.value(&nonce).expect(BAD_CSP_MESSAGE));
         let csp_ro = self
-            .helmet
+            .sombrero
             .content_security_policy_report_only
             .as_ref()
             .map(|csp| csp.value(&nonce).expect(BAD_CSP_MESSAGE));
         request.extensions_mut().insert(CspNonce(nonce));
 
         let future = self.inner.call(request);
-        Box::pin(helmet_svc_middleware(
-            self.helmet.clone(),
+        Box::pin(sombrero_svc_middleware(
+            self.sombrero.clone(),
             csp,
             csp_ro,
             future,
@@ -242,8 +242,8 @@ fn add_opt_header_raw(
     }
 }
 
-async fn helmet_svc_middleware<F, B, E>(
-    h: Helmet,
+async fn sombrero_svc_middleware<F, B, E>(
+    h: Sombrero,
     content_security_policy: Option<HeaderValue>,
     content_security_policy_report_only: Option<HeaderValue>,
     response_fut: F,
@@ -298,6 +298,6 @@ pub fn random_string(length: usize) -> String {
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
     #[cfg(feature = "axum")]
-    #[error("`Helmet` middleware (required for `CspNonce` extractor) not enabled!")]
+    #[error("`Sombrero` middleware (required for `CspNonce` extractor) not enabled!")]
     NonceMiddlewareNotEnabled(#[from] axum::NonceNotFoundError),
 }

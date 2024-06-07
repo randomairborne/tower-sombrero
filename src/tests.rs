@@ -3,14 +3,14 @@ use tokio::{net::TcpListener, sync::oneshot::Sender, task::JoinHandle};
 
 use crate::{
     headers::{ContentSecurityPolicy, CspSource},
-    Helmet,
+    Sombrero,
 };
 
 #[tokio::test]
-async fn helmet_layer_compiles() {
-    let helmet = Helmet::default();
+async fn sombrero_layer_compiles() {
+    let sombrero = Sombrero::default();
     let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
-    let app = Router::new().route("/", get(test_handler)).layer(helmet);
+    let app = Router::new().route("/", get(test_handler)).layer(sombrero);
     axum::serve(listener, app)
         .with_graceful_shutdown(std::future::ready(()))
         .await
@@ -18,9 +18,9 @@ async fn helmet_layer_compiles() {
 }
 
 #[tokio::test]
-async fn helmet_layer_handles() {
-    let helmet = Helmet::default();
-    let server = test_server(helmet).await;
+async fn sombrero_layer_handles() {
+    let sombrero = Sombrero::default();
+    let server = test_server(sombrero).await;
     reqwest::get(server.url())
         .await
         .unwrap()
@@ -30,9 +30,9 @@ async fn helmet_layer_handles() {
 }
 
 #[tokio::test]
-async fn helmet_layer_adds_csp() {
-    let helmet = Helmet::default();
-    let server = test_server(helmet).await;
+async fn sombrero_layer_adds_csp() {
+    let sombrero = Sombrero::default();
+    let server = test_server(sombrero).await;
     let resp = reqwest::get(server.url()).await.unwrap();
     let csp = resp
         .headers()
@@ -47,10 +47,10 @@ async fn helmet_layer_adds_csp() {
 }
 
 #[tokio::test]
-async fn helmet_layer_changes_csp_nonce() {
+async fn sombrero_layer_changes_csp_nonce() {
     let csp = ContentSecurityPolicy::new().script_src([CspSource::Nonce]);
-    let helmet = Helmet::new().content_security_policy(csp);
-    let server = test_server(helmet).await;
+    let sombrero = Sombrero::new().content_security_policy(csp);
+    let server = test_server(sombrero).await;
     let resp1 = reqwest::get(server.url()).await.unwrap();
     let resp2 = reqwest::get(server.url()).await.unwrap();
     let nonce1 = helper_get_nonce(&resp1, "content-security-policy");
@@ -60,12 +60,12 @@ async fn helmet_layer_changes_csp_nonce() {
 }
 
 #[tokio::test]
-async fn helmet_layer_one_nonce_per_request() {
+async fn sombrero_layer_one_nonce_per_request() {
     let csp = ContentSecurityPolicy::new().script_src([CspSource::Nonce]);
-    let helmet = Helmet::new()
+    let sombrero = Sombrero::new()
         .content_security_policy(csp.clone())
         .content_security_policy_report_only(csp);
-    let server = test_server(helmet).await;
+    let server = test_server(sombrero).await;
     let resp = reqwest::get(server.url()).await.unwrap();
     let nonce_ac = helper_get_nonce(&resp, "content-security-policy");
     let nonce_ro = helper_get_nonce(&resp, "content-security-policy-report-only");
@@ -84,9 +84,9 @@ fn helper_get_nonce(resp: &reqwest::Response, name: &str) -> String {
         .to_string()
 }
 
-async fn test_server(helmet: Helmet) -> Server {
+async fn test_server(sombrero: Sombrero) -> Server {
     let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
-    let app = Router::new().route("/", get(test_handler)).layer(helmet);
+    let app = Router::new().route("/", get(test_handler)).layer(sombrero);
     let port = listener.local_addr().unwrap().port();
     let (shutdown_tx, shutdown_rx) = tokio::sync::oneshot::channel::<()>();
     let task = tokio::spawn(async {
