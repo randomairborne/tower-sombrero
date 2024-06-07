@@ -2,6 +2,11 @@
 name = "tower-helmet"
 version = "0.0.1"
 edition = "2021"
+description = "Tower middleware and utilities to help harden web applications"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/randomairborne/tower-helmet"
+keywords = ["csp", "tower", "http", "security"]
+categories = ["web-programming::http-server"]
 
 [dependencies]
 async-trait = { version = "0", optional = true }
