@@ -48,8 +48,8 @@ async fn sombrero_layer_adds_csp() {
 
 #[tokio::test]
 async fn sombrero_layer_changes_csp_nonce() {
-    let csp = ContentSecurityPolicy::new().script_src([CspSource::Nonce]);
-    let sombrero = Sombrero::new().content_security_policy(csp);
+    let csp = ContentSecurityPolicy::new_empty().script_src([CspSource::Nonce]);
+    let sombrero = Sombrero::new_empty().content_security_policy(csp);
     let server = test_server(sombrero).await;
     let resp1 = reqwest::get(server.url()).await.unwrap();
     let resp2 = reqwest::get(server.url()).await.unwrap();
@@ -61,8 +61,8 @@ async fn sombrero_layer_changes_csp_nonce() {
 
 #[tokio::test]
 async fn sombrero_layer_one_nonce_per_request() {
-    let csp = ContentSecurityPolicy::new().script_src([CspSource::Nonce]);
-    let sombrero = Sombrero::new()
+    let csp = ContentSecurityPolicy::new_empty().script_src([CspSource::Nonce]);
+    let sombrero = Sombrero::new_empty()
         .content_security_policy(csp.clone())
         .content_security_policy_report_only(csp);
     let server = test_server(sombrero).await;
