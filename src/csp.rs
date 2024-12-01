@@ -41,15 +41,15 @@ impl CspLayer {
         Self::new_internal(Arc::new(csp), true)
     }
 
-    pub fn new_arc(csp: Arc<ContentSecurityPolicy>) -> Self {
+    pub const fn new_arc(csp: Arc<ContentSecurityPolicy>) -> Self {
         Self::new_internal(csp, false)
     }
 
-    pub fn new_arc_report_only(csp: Arc<ContentSecurityPolicy>) -> Self {
+    pub const fn new_arc_report_only(csp: Arc<ContentSecurityPolicy>) -> Self {
         Self::new_internal(csp, true)
     }
 
-    fn new_internal(csp: Arc<ContentSecurityPolicy>, report_only: bool) -> Self {
+    const fn new_internal(csp: Arc<ContentSecurityPolicy>, report_only: bool) -> Self {
         Self { report_only, csp }
     }
 }

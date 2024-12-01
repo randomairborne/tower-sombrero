@@ -35,7 +35,7 @@ pub struct ContentSecurityPolicy {
 
 impl ContentSecurityPolicy {
     // i don't want any footguns around here
-    pub fn new_empty() -> Self {
+    pub const fn new_empty() -> Self {
         Self {
             default_src: vec![],
             child_src: vec![],
