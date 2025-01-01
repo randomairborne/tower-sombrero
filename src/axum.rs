@@ -28,8 +28,7 @@ impl IntoResponse for NonceNotFoundError {
     }
 }
 
-#[async_trait::async_trait]
-impl<S> FromRequestParts<S> for CspNonce {
+impl<S: Sync> FromRequestParts<S> for CspNonce {
     type Rejection = NonceNotFoundError;
 
     async fn from_request_parts(parts: &mut Parts, _state: &S) -> Result<Self, Self::Rejection> {
