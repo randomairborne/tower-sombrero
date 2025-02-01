@@ -25,7 +25,7 @@ use http::{
     header::{CONTENT_SECURITY_POLICY, CONTENT_SECURITY_POLICY_REPORT_ONLY},
     HeaderMap, HeaderName, HeaderValue, Request, Response,
 };
-use rand::{distributions::Alphanumeric, Rng};
+use rand::{distr::Alphanumeric, Rng};
 use tower_layer::Layer;
 use tower_service::Service;
 
@@ -288,8 +288,8 @@ where
 }
 
 pub fn random_string(length: usize) -> String {
-    let rng = rand::thread_rng();
-    rng.sample_iter(Alphanumeric)
+    rand::rng()
+        .sample_iter(Alphanumeric)
         .take(length)
         .map(char::from)
         .collect()
